@@ -60,10 +60,12 @@ public final class CacheInterceptor implements Interceptor {
     Request networkRequest = strategy.networkRequest;
     Response cacheResponse = strategy.cacheResponse;
 
+    //更新cache计数
     if (cache != null) {
       cache.trackResponse(strategy);
     }
 
+    //无需使用cache，释放body
     if (cacheCandidate != null && cacheResponse == null) {
       closeQuietly(cacheCandidate.body()); // The cache candidate wasn't applicable. Close it.
     }
@@ -243,7 +245,7 @@ public final class CacheInterceptor implements Interceptor {
   /**
    * Returns true if {@code fieldName} is an end-to-end HTTP header, as defined by RFC 2616,
    * 13.5.1.
-   */
+   */ //http://www.cnblogs.com/imyalost/p/5708445.html
   static boolean isEndToEnd(String fieldName) {
     return !"Connection".equalsIgnoreCase(fieldName)
         && !"Keep-Alive".equalsIgnoreCase(fieldName)

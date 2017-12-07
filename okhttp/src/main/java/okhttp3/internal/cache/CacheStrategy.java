@@ -169,9 +169,11 @@ public final class CacheStrategy {
     /**
      * Returns a strategy to satisfy {@code request} using the a cached response {@code response}.
      */
+    //如果request不为空，则需要进行网络请求，如果response不为空则使用缓存
     public CacheStrategy get() {
       CacheStrategy candidate = getCandidate();
 
+      //如果设置了only-if-cache标志，则需要禁止进行网络请求，
       if (candidate.networkRequest != null && request.cacheControl().onlyIfCached()) {
         // We're forbidden from using the network and the cache is insufficient.
         return new CacheStrategy(null, null);
@@ -187,7 +189,7 @@ public final class CacheStrategy {
         return new CacheStrategy(request, null);
       }
 
-      // Drop the cached response if it's missing a required handshake.
+      // Drop the cached response if it's missing a required handshake.https需要握手信息
       if (request.isHttps() && cacheResponse.handshake() == null) {
         return new CacheStrategy(request, null);
       }
